@@ -3,6 +3,10 @@ package BatDongSan.example.BatDongSan.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -26,17 +30,32 @@ public class Property {
     private String city; // Vị trí bất động sản
 
     @NotNull
-    private String state; // Vị trí bất động sản
-
-    @NotNull
     private String zipCode; // Vị trí bất động sản
 
+    private Double latitude; // Làm việc với dịch vụ bản đồ
+    private Double longitude; // Làm việc với dịch vụ bản đồ
+
     @NotNull
-    private Double price; // Giá trị kinh tế hoặc giá niêm yết của tài sản.
+    private BigDecimal price; // Giá trị kinh tế hoặc giá niêm yết của tài sản.
+    @NotNull
+    private String province; // tỉnh
+    @NotNull
+    private String district; // huyện
+    @NotNull
+    private String commune; // xã
+    private String street; // đường phố ( ví dụ: Hoàng Hoa Thám)
+    private String project; // tên dự án
+    private String displayedAddress; // địa chỉ được hiển thị
 
     @Enumerated(EnumType.STRING)
     @NotNull
     private PropertyType propertyType; // Loại tài sản (ví dụ: nhà, căn hộ)
+
+    @Enumerated(EnumType.STRING)
+    private ArticleType articleType;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @NotNull
     private Integer bedrooms; // Chi tiết tài sản.
@@ -51,10 +70,12 @@ public class Property {
     private String description; // Thông tin bổ sung về tài sản
 
     @Enumerated(EnumType.STRING)
-    private PropertyStatus status; // Tình trạng hiện tại của bất động sản trên thị trường
+    private PropertyStatus propertyStatus; // Tình trạng hiện tại của bất động sản trên thị trường
 
-    @Temporal(TemporalType.DATE)
-    private Date dateListed; // Khi tài sản được cung cấp trên nền tảng (ngày niêm yết lên web)
+    @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
+    private Date createdAt;
 
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PropertyImage> images;
@@ -68,23 +89,4 @@ public class Property {
     @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Message> messages;
 
-    public Property(User owner, String address, String city, String state, String zipCode, Double price, PropertyType propertyType, Integer bedrooms, Integer bathrooms, Double squareFootage, String description, PropertyStatus status, Date dateListed, Set<PropertyImage> images, Set<Comment> comments, Set<Favorite> favorites, Set<Message> messages) {
-        this.owner = owner;
-        this.address = address;
-        this.city = city;
-        this.state = state;
-        this.zipCode = zipCode;
-        this.price = price;
-        this.propertyType = propertyType;
-        this.bedrooms = bedrooms;
-        this.bathrooms = bathrooms;
-        this.squareFootage = squareFootage;
-        this.description = description;
-        this.status = status;
-        this.dateListed = dateListed;
-        this.images = images;
-        this.comments = comments;
-        this.favorites = favorites;
-        this.messages = messages;
-    }
 }
